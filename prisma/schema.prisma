@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // or "postgresql"
+  url      = "file:./queue.db" // when not using sqlite: env("DATABASE_URL")
+}
+
+model Queue {
+  id              String      @id @unique
+  broadcasterName String      @unique
+  queueOpen       Boolean     @default(true)
+  queueLevel      Int         @default(0)
+  queueLength     Int         @default(0)
+  User            User[]
+  Blacklist       Blacklist[]
+}
+
+model User {
+  id      String  @id @unique @default(cuid())
+  Name    String
+  queueId String?
+  Queue   Queue?  @relation(fields: [queueId], references: [id])
+}
+
+model Blacklist {
+  id      String  @id @unique @default(cuid())
+  Name    String
+  queueId String?
+  Queue   Queue?  @relation(fields: [queueId], references: [id])
+}
