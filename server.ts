@@ -12,7 +12,7 @@ const client = new tmi.Client({
     username: process.env.TWITCH_USERNAME,
     password: process.env.TWITCH_USER_AUTH,
   },
-  channels: [process.env.TWITCH_USERNAME || "", "xnugget_"],
+  channels: [process.env.TWITCH_USERNAME || ""],
 });
 
 const number2level = (number: number) => {
@@ -53,7 +53,7 @@ const level2number = (level: string) => {
 };
 
 const joinchannels = async (channels: any) => {
-  if (!channels.length) return;
+  if (!channels?.length) return;
   setTimeout(async () => {
     await client
       .join(channels[0].broadcasterName)
@@ -63,7 +63,7 @@ const joinchannels = async (channels: any) => {
 
     channels.shift();
 
-    if (!channels.length) return;
+    if (!channels?.length) return;
 
     joinchannels(channels);
   }, 1000);
@@ -78,7 +78,7 @@ const joinInit = async () => {
   joinchannels(channels);
 };
 
-// joinInit();
+joinInit();
 
 const userLevel = (tags: any) => {
   if (tags["user-id"] === tags["room-id"]) return 3;
@@ -963,7 +963,7 @@ const queueLevel = async (channel: string, tags: any, message: string) => {
     return;
   }
 
-  if (!convertedLevel) {
+  if (convertedLevel===-1) {
     client.say(channel, `@${user_name}, please use a valid level.`);
     return;
   }
